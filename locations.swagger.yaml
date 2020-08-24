@@ -1,0 +1,129 @@
+---
+openapi: 3.0.2
+info:
+  title: Locations User412
+  version: 1.0.0
+  description: Locations lab
+paths:
+  /locations:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/location'
+              examples:
+                all:
+                  value:
+                  - id: 1
+                    name: International Inc Corporate Office
+                    location:
+                      lat: 51.5013673
+                      lng: -0.1440787
+                    type: headquarter
+                    status: "1"
+                  - id: 2
+                    name: International Inc North America
+                    location:
+                      lat: 40.6976701
+                      lng: -74.259876
+                    type: office
+                    status: "1"
+                  - id: 3
+                    name: International Inc France
+                    location:
+                      lat: 48.859
+                      lng: 2.2069746
+                    type: office
+                    status: "1"
+          description: Successful get locations
+      operationId: "100"
+      summary: Get locations
+      description: Get the locations
+    post:
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/location'
+      operationId: "101"
+      summary: Creates a new location record
+      description: Create new location record
+  /locations/{id}:
+    summary: Return single location by id
+    description: return a single location record based on a single id
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/location'
+          description: Returns a single location record
+      operationId: "102"
+      summary: GET location
+      description: Return single location data with location id number
+    parameters:
+    - name: id
+      description: location id number
+      schema:
+        format: int32
+        type: integer
+      in: path
+      required: true
+  /locations/phone/{id}:
+    summary: Return location record by phone number
+    description: return a single location record based on a single phone number parameter
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/location'
+          description: location from phone response description
+      operationId: "104"
+      summary: GET location from phone
+      description: GET location data with phone number
+    parameters:
+    - name: id
+      schema:
+        format: int32
+        type: integer
+      in: path
+      required: true
+components:
+  schemas:
+    location:
+      title: Root Type for location
+      description: DataType location description
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              format: double
+              type: number
+            lng:
+              format: double
+              type: number
+        type:
+          type: string
+        status:
+          type: string
+      example:
+        id: 1
+        name: International Inc Corporate Office
+        location:
+          lat: 51.5013673
+          lng: -0.1440787
+        type: headquarter
+        status: "1"
