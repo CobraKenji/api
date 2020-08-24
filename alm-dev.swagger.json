@@ -1,0 +1,304 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "alm-dev",
+        "version": "1.0.0",
+        "description": "API dev for ALM portal",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Wes Spinks",
+            "url": "http://redhat.com",
+            "email": "it-ges-automation@redhat.com"
+        },
+        "license": {
+            "name": "MIT License",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://petstore.swagger.io/api"
+        }
+    ],
+    "paths": {
+        "/gitlab/{kerberos}": {
+            "description": "Return Gitlab user object when given a Kerberos",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/gitlabUser"
+                                    }
+                                },
+                                "examples": {
+                                    "example-gitlab-user-resp": {
+                                        "value": {
+                                            "result": {
+                                                "attributes": "{'id': 9999, 'name': 'Example Test-User', 'username': 'example', 'state': 'active', 'avatar_url': 'https://secure.gravatar.com/avatar/abcdec461b8d1f6d79ed736b9?s=80&d=identicon', 'web_url': 'https://gitlab.corp.redhat.com/wspinks'}",
+                                                "id": "9999",
+                                                "state": "active",
+                                                "username": "example@redhat.com"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful Gitlab user GET response"
+                    }
+                },
+                "operationId": "100",
+                "summary": "GET Gitlab user data",
+                "description": "Returns user Gitlab data"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "example-kerberos-id": {
+                            "value": "wspinks"
+                        }
+                    },
+                    "name": "kerberos",
+                    "description": "Kerberos ID",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/gitlab/reactivate/{kerberos}": {
+
+        },
+        "/signin": {
+
+        },
+        "/gitlab/entitlement/{kerberos}": {
+            "summary": "Returns the entitlement status of a user by Kerberos.",
+            "description": "Business logic takes Kerberos ID and determines if user is approved.\n\n- Is the user in IT -> Yes -> Approved\n- Is the user in IT -> No -> Is approved guest collaborator?\n   \n- Is approved guest collaborator -> Yes -> Approved\n- Is approved guest collaborator -> No -> Not Approved\n   \n- Is the user active? Is user in inactivity file? \n- Yes -> Inactive\n- No -> Active",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/entitlment-response"
+                                }
+                            }
+                        },
+                        "description": "successful GET user entitlement response"
+                    }
+                },
+                "operationId": "104",
+                "summary": "GET users expected Gitlab entitlement",
+                "description": "Uses business logic to check if user should be entitled to Gitlab license. \nApproved or not approved (1 or 0)."
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "example-kerberos-id": {
+                            "value": "wspinks"
+                        }
+                    },
+                    "name": "kerberos",
+                    "description": "Users Kerberos ID",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/ldap/{kerberos}": {
+            "summary": "Return LDAP user object when given a Kerberos",
+            "description": "Return LDAP user object when given a Kerberos",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ldapUser"
+                                    }
+                                },
+                                "examples": {
+                                    "example-ldap-user-resp": {
+                                        "value": {
+                                            "result": {
+                                                "dn": "uid=wspinks,ou=rhusers,dc=redhat,dc=com",
+                                                "rhatCostCenter": "857",
+                                                "rhatPersonType": "Employee",
+                                                "rhatUUID": "f01b-34c216c3a234e7-4411005b4a0b-995d",
+                                                "uid": "wspinks"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful GET LDAP user response"
+                    }
+                },
+                "operationId": "101",
+                "summary": "GET user LDAP data",
+                "description": "Return LDAP data for user given a Kerberos ID"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "example-ldap-user": {
+                            "value": {
+                                "result": {
+                                    "dn": "uid=wspinks,ou=rhusers,dc=redhat,dc=com",
+                                    "rhatCostCenter": "857",
+                                    "rhatPersonType": "Employee",
+                                    "rhatUUID": "f01b-34c216c3a234e7-4411005b4a0b-995d",
+                                    "uid": "wspinks"
+                                }
+                            }
+                        }
+                    },
+                    "name": "kerberos",
+                    "description": "Users Kerberos ID",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "Error": {
+                "required": [
+                    "code",
+                    "message"
+                ],
+                "properties": {
+                    "code": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "gitlabUser": {
+                "title": "Root Type for gitlabUser",
+                "description": "Gitlab user data type definition",
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "object",
+                        "properties": {
+                            "attributes": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string"
+                            },
+                            "username": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "result": {
+                        "attributes": "{'id': 1412, 'name': 'Wesley Spinks', 'username': 'wspinks', 'state': 'active', 'avatar_url': 'https://secure.gravatar.com/avatar/8c1ec461b8d1f6d79ed736b9e11e6a05?s=80&d=identicon', 'web_url': 'https://gitlab.corp.redhat.com/wspinks'}",
+                        "id": "412",
+                        "state": "active",
+                        "username": "wspinks"
+                    }
+                }
+            },
+            "ldapUser": {
+                "title": "Root Type for ldapUser",
+                "description": "LDAP user data type definition",
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "object",
+                        "properties": {
+                            "dn": {
+                                "type": "string"
+                            },
+                            "rhatCostCenter": {
+                                "type": "string"
+                            },
+                            "rhatPersonType": {
+                                "type": "string"
+                            },
+                            "rhatUUID": {
+                                "type": "string"
+                            },
+                            "uid": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "result": {
+                        "dn": "uid=wspinks,ou=rhusers,dc=redhat,dc=com",
+                        "rhatCostCenter": "857",
+                        "rhatPersonType": "Employee",
+                        "rhatUUID": "f01b-34c216c3a234e7-4411005b4a0b-995d",
+                        "uid": "wspinks"
+                    }
+                }
+            },
+            "entitlment-response": {
+                "title": "Root Type for entitlment-response",
+                "description": "Response json object for /gitlab/entitlement/",
+                "type": "object",
+                "properties": {
+                    "uid": {
+                        "description": "Kerberos ID of user",
+                        "type": "string"
+                    },
+                    "entitled": {
+                        "description": "Is user entitled for Gitlab license?",
+                        "type": "boolean"
+                    },
+                    "approved_guest_collab": {
+                        "description": "Is user approved for guest collaborator?",
+                        "type": "boolean"
+                    },
+                    "in_IT": {
+                        "description": "Is user in IT?",
+                        "type": "boolean"
+                    },
+                    "in_inactive": {
+                        "description": "Is user in inactivity file?",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "uid": "wspinks",
+                    "entitled": true,
+                    "approved_guest_collab": false,
+                    "in_IT": true,
+                    "in_inactive": "false"
+                }
+            }
+        }
+    }
+}
